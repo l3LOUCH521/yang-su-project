@@ -1,25 +1,9 @@
-import { posts, type Post } from "@repo/db/data";
+import { client } from "@repo/db/client";
 import BlogList from "@/components/Blog/List";
 import { AppLayout } from "@/components/Layout/AppLayout";
 
-// get posts by tag name
-function getPostsByTag(tagName: string): Post[] {
-  const activePosts = posts.filter((post) => post.active);
-  
-  // filter posts that have the specified tag
-  return activePosts.filter((post) => {
-    const tags = post.tags.split(",").map((tag) => tag.trim());
-    return tags.some((tag) => {
-      // Make it lowercase and replace hyphens with spaces
-      const normalizedTag = tag.toLowerCase().replace(/-/g, ' ');
-      
-      // Make it lowercase and replace hyphens with spaces
-      const normalizedSearch = tagName.toLowerCase().replace(/-/g, ' ');
-      
-      // checking if they match and return true
-      return normalizedTag === normalizedSearch;
-    });
-  });
+function normalizeTag(value: string) {
+  return value.toLowerCase().replace(/-/g, " ").trim();
 }
 
 export default async function TagPage({
@@ -34,9 +18,23 @@ export default async function TagPage({
   // Browsers encode special characters in URLs (e.g. spaces become %20).
   // decodeURIComponent turns those ugly codes back into regular text.
   const tagName = decodeURIComponent(name);
-  
-  // Pass the cleaned URL text into our helper function to search the database
-  const tagPosts = getPostsByTag(tagName);
+
+  const rawPosts = await client.db.post.findMany({
+    where: { active: true },
+    orderBy: { date: "desc" },
+    include: { Likes: true },
+  });
+
+  const posts = rawPosts.map((post) => ({
+    ...post,
+    likes: post.Likes.length,
+  }));
+
+  const normalizedSearch = normalizeTag(tagName);
+  const tagPosts = posts.filter((post) => {
+    const tags = post.tags.split(",").map((tag) => tag.trim());
+    return tags.some((tag) => normalizeTag(tag) === normalizedSearch);
+  });
   
   // Format the text specifically for the visual Title "Tag: web design" on the screen.
   // We replace hyphens with spaces because it looks prettier for the user to read!
