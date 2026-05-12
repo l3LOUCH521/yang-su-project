@@ -1,15 +1,6 @@
-import { posts, type Post } from "@repo/db/data";
+import { client } from "@repo/db/client";
 import BlogList from "@/components/Blog/List";
 import { AppLayout } from "@/components/Layout/AppLayout";
-
-// get post by category name
-function getPostsByCategory(categoryName: string): Post[] {
-  const activePosts = posts.filter((post) => post.active);
-  // filter posts by category name (case-insensitive)
-  return activePosts.filter(
-    (post) => post.category.toLowerCase() === categoryName.toLowerCase()
-  );
-}
 
 export default async function CategoryPage({
   params,
@@ -21,7 +12,21 @@ export default async function CategoryPage({
   // decodeURIComponent to handle URL-encoded category names
   const categoryName = decodeURIComponent(name);
 
-  const categoryPosts = getPostsByCategory(categoryName);
+  const rawPosts = await client.db.post.findMany({
+    where: { active: true },
+    orderBy: { date: "desc" },
+    include: { Likes: true },
+  });
+
+  const posts = rawPosts.map((post) => ({
+    ...post,
+    likes: post.Likes.length,
+  }));
+
+  const normalizedSearch = categoryName.trim().toLowerCase();
+  const categoryPosts = posts.filter(
+    (post) => post.category.trim().toLowerCase() === normalizedSearch
+  );
 
   // count posts in this category
   const postCount = categoryPosts.length;
