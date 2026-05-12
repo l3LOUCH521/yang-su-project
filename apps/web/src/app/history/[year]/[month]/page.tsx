@@ -1,4 +1,4 @@
-import { posts, type Post } from "@repo/db/data";
+import { client } from "@repo/db/client";
 import BlogList from "@/components/Blog/List";
 import { AppLayout } from "@/components/Layout/AppLayout";
 
@@ -18,27 +18,15 @@ const months: { [key: string]: string } = {
 };
 
 
-// retrieve posts by year and month
-function getPostsByYearMonth(year: string, month: string): Post[] {
-  const activePosts = posts.filter((post) => post.active);
+function coerceYearMonth(year: string, month: string) {
+  const y = Number.parseInt(year, 10);
+  const m = Number.parseInt(month, 10);
 
-  //parse number using base 10 to prevent unexpected behavior when user input month with leading zero (e.g. 01, 02)
-  const targetYear = parseInt(year, 10);
-  const targetMonth = parseInt(month, 10);
-  
-  // validate year and month
-  // preventing page crash when user try to input invalid year or month in the URL
-  if (isNaN(targetYear) || isNaN(targetMonth) || targetMonth < 1 || targetMonth > 12) {
-    return [];
+  if (!Number.isFinite(y) || !Number.isFinite(m) || m < 1 || m > 12) {
+    return null;
   }
 
-  return activePosts.filter((post) => {
-    // Convert the raw date string from the database into a JavaScript Date object
-    // so we can use math and built-in date functions
-    const postDate = new Date(post.date);
-    // Keep this post only if BOTH the Year AND the Month exactly match the URL
-    return postDate.getFullYear() === targetYear && postDate.getMonth() + 1 === targetMonth;
-  });
+  return { year: y, month: m };
 }
 
 // format the display name for the month and year
@@ -55,9 +43,31 @@ export default async function HistoryPage({
 }) {
   // Wait for Next.js to grab the year and month from the URL
   const { year, month } = await params;
-  
-  // Use those URL numbers to find all the matching blog posts in our database
-  const historyPosts = getPostsByYearMonth(year, month);
+
+  const coerced = coerceYearMonth(year, month);
+  const historyPosts = coerced
+    ? await (async () => {
+        const startDate = new Date(coerced.year, coerced.month - 1, 1, 0, 0, 0, 0);
+        const endDate = new Date(coerced.year, coerced.month, 1, 0, 0, 0, 0);
+
+        const rawPosts = await client.db.post.findMany({
+          where: {
+            active: true,
+            date: {
+              gte: startDate,
+              lt: endDate,
+            },
+          },
+          orderBy: { date: "desc" },
+          include: { Likes: true },
+        });
+
+        return rawPosts.map((post) => ({
+          ...post,
+          likes: post.Likes.length,
+        }));
+      })()
+    : [];
 
   // Count how many posts we actually found
   const postCount = historyPosts.length;
