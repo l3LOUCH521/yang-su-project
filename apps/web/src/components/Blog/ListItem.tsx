@@ -6,7 +6,7 @@ export function BlogListItem({ post }: { post: Post }) {
     // convert date string to Date object
     const dateObject = new Date(date);
     // display day as number (e.g. 1, 2, ..., 31)
-    const day = dateObject.getDate();
+    const day = String(dateObject.getDate()).padStart(2, "0");
     //display month as short name, e.g. Jan, Feb, Mar
     const month = dateObject.toLocaleDateString("en-US", { month: "short" });
     const year = dateObject.getFullYear();
