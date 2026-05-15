@@ -36,4 +36,26 @@ test.describe("HOME PAGINATION", () => {
     },
   );
 
+  test(
+    "Can go back from next page to previous page",
+    {
+      tag: "@a3",
+    },
+    async ({ page }) => {
+      await page.goto("/?page=1&pageSize=2");
+
+      await page.getByTestId("pagination-next").click();
+      await expect(page).toHaveURL(/\/?page=2(&|$)/);
+      await expect(page.getByTestId("pagination-status")).toContainText(
+        "Page 2 of 2",
+      );
+
+      await page.getByTestId("pagination-prev").click();
+      await expect(page).toHaveURL(/\/?page=1(&|$)/);
+      await expect(page.getByTestId("pagination-status")).toContainText(
+        "Page 1 of 2",
+      );
+    },
+  );
+
 });
