@@ -58,4 +58,35 @@ test.describe("HOME PAGINATION", () => {
     },
   );
 
+  test(
+    "Redirects back to page 1 if current page becomes invalid due to data changes",
+    {
+      tag: "@a3",
+    },
+    async ({ page }) => {
+      await seed();
+
+      try {
+        await page.goto("/?page=2&pageSize=2");
+        await expect(page.getByTestId("pagination-status")).toContainText(
+          "Page 2 of 2",
+        );
+
+        // Simulate an admin hiding an active post.
+        await client.db.post.updateMany({
+          where: { urlId: "no-front-end-framework-is-the-best" },
+          data: { active: false },
+        });
+
+        // The Home page refreshes periodically; after the data change, it should
+        // automatically redirect to the last valid page (page 1).
+        await expect(page).toHaveURL(/\/?page=1(&|$)/, { timeout: 15000 });
+        await expect(page.getByTestId("pagination-status")).toContainText(
+          "Page 1 of 1",
+        );
+      } finally {
+        await seed();
+      }
+    },
+  );
 });
