@@ -165,6 +165,8 @@ jobs:
         with:
           working-directory: tests/playwright
           test-name: Extra - Home Pagination
+          courseId: ${{env.COURSE_ID}}
+          sectionId: major-assignment-in-ci-cd-and-devops
           command: pnpm playwright test tests/web/home-pagination.spec.ts
           timeout: 10
           max-score: 1
