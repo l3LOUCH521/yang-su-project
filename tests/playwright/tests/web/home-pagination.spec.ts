@@ -8,6 +8,33 @@ test.beforeAll(async () => {
 
 test.describe("HOME PAGINATION", () => {
   test(
+    "Disables next/prev when there is only one page",
+    {
+      tag: "@a3",
+    },
+    async ({ page }) => {
+      await page.goto("/");
+
+      await expect(page.getByTestId("pagination")).toBeVisible();
+      await expect(page.getByTestId("pagination-status")).toContainText(
+        "Page 1 of 1",
+      );
+
+      // Default home should still show only the 3 active posts
+      await expect(page.locator("article")).toHaveCount(3);
+
+      const prev = page.getByTestId("pagination-prev");
+      const next = page.getByTestId("pagination-next");
+
+      // Disabled state is rendered as a <span aria-disabled="true"> (not a link)
+      await expect(prev).toHaveAttribute("aria-disabled", "true");
+      await expect(next).toHaveAttribute("aria-disabled", "true");
+      await expect(prev).not.toHaveAttribute("href", /.+/);
+      await expect(next).not.toHaveAttribute("href", /.+/);
+    },
+  );
+
+  test(
     "Can paginate from current page to next page",
     {
       tag: "@a3",
