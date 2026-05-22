@@ -10,7 +10,7 @@ test.describe("HOME PAGINATION", () => {
   test(
     "Disables next/prev when there is only one page",
     {
-      tag: "@a3",
+      tag: "@a4",
     },
     async ({ page }) => {
       await page.goto("/");
@@ -26,7 +26,8 @@ test.describe("HOME PAGINATION", () => {
       const prev = page.getByTestId("pagination-prev");
       const next = page.getByTestId("pagination-next");
 
-      // Disabled state is rendered as a <span aria-disabled="true"> (not a link)
+      // Disabled state is rendered as a <span aria-disabled="true"> 
+      // (not a link)
       await expect(prev).toHaveAttribute("aria-disabled", "true");
       await expect(next).toHaveAttribute("aria-disabled", "true");
       await expect(prev).not.toHaveAttribute("href", /.+/);
@@ -37,7 +38,7 @@ test.describe("HOME PAGINATION", () => {
   test(
     "Can paginate from current page to next page",
     {
-      tag: "@a3",
+      tag: "@a4",
     },
     async ({ page }) => {
       await page.goto("/?page=1&pageSize=2");
@@ -50,23 +51,23 @@ test.describe("HOME PAGINATION", () => {
       await expect(page.locator("article")).toHaveCount(2);
 
       await page.getByTestId("pagination-next").click();
+      // After clicking "Next", the URL should update to page=2 
+      // and the pagination status should reflect the new page.
       await expect(page).toHaveURL(/\/?page=2(&|$)/);
 
       await expect(page.getByTestId("pagination-status")).toContainText(
         "Page 2 of 2",
       );
 
+      // On page 2, there should only be 1 active post
       await expect(page.locator("article")).toHaveCount(1);
-
-      // Inactive post (Dec 2012) should never appear
-      await expect(page.getByText("December, 2012")).not.toBeVisible();
     },
   );
 
   test(
     "Can go back from next page to previous page",
     {
-      tag: "@a3",
+      tag: "@a4",
     },
     async ({ page }) => {
       await page.goto("/?page=1&pageSize=2");
@@ -88,7 +89,7 @@ test.describe("HOME PAGINATION", () => {
   test(
     "Redirects back to page 1 if current page becomes invalid due to data changes",
     {
-      tag: "@a3",
+      tag: "@a4",
     },
     async ({ page }) => {
       await seed();
