@@ -4,10 +4,15 @@ import { Main } from "../components/Main";
 import { redirect } from "next/navigation";
 import styles from "./page.module.css";
 
-// Helper function to coerce a string to a positive integer, or return null if invalid
+// Helper function to coerce a string to a positive integer,
+//  or return null if invalid
 function coercePositiveInt(value: unknown) {
+  // If the value is not a string return null
   if (typeof value !== "string") return null;
+  // Parse the string to an integer
   const parsed = Number.parseInt(value, 10);
+  // Return the parsed integer if it's a finite number greater than 0, 
+  // otherwise return null
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
@@ -61,8 +66,8 @@ export default async function Home({
   }));
 
   // Determine if there are previous or next pages for pagination controls
-  const prevPage = safePage > 1 ? safePage - 1 : null;
-  const nextPage = safePage < totalPages ? safePage + 1 : null;
+  const prevPage = safePage > 1 ? safePage - 1 : null; // Previous page exists if we're beyond the first page
+  const nextPage = safePage < totalPages ? safePage + 1 : null; // Next page exists if we're before the last page
 
   return (
     <AppLayout>
