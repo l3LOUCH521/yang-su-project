@@ -55,6 +55,9 @@ const handleToggle = async (id: number, currentActive: boolean) => {
   // State to manage sorting asc or desc and default is desc
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
+  const PAGE_SIZE = 4;
+  const [page, setPage] = useState(1);
+
   // filtering system
   const filteredPosts = optimisticPosts.filter((post) => {
     // filter by title or content
@@ -101,6 +104,20 @@ const handleToggle = async (id: number, currentActive: boolean) => {
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     }
   });
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, tag, visibility, dateFilter, sortBy, sortOrder]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedPosts.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+
+  useEffect(() => {
+    if (page !== safePage) setPage(safePage);
+  }, [page, safePage]);
+
+  const pageStartIndex = (safePage - 1) * PAGE_SIZE;
+  const pagePosts = sortedPosts.slice(pageStartIndex, pageStartIndex + PAGE_SIZE);
 
   return (
     <div className={styles.flexColGap6}>
@@ -189,7 +206,7 @@ const handleToggle = async (id: number, currentActive: boolean) => {
         {sortedPosts.length === 0 ? (
           <p className={styles.emptyState}>No posts found.</p>
         ) : (
-          sortedPosts.map((post) => (
+          pagePosts.map((post) => (
             <article
               key={post.id}
               className={styles.postItem}
@@ -242,6 +259,36 @@ const handleToggle = async (id: number, currentActive: boolean) => {
           ))
         )}
       </div>
+
+      {sortedPosts.length > 0 && (
+        <div className={styles.flexBetween} data-test-id="pagination">
+          <button
+            type="button"
+            className={styles.buttonSecondary}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+            aria-label="Previous page"
+            data-test-id="pagination-prev"
+          >
+            Previous
+          </button>
+
+          <span aria-live="polite" data-test-id="pagination-status">
+            Page {safePage} of {totalPages}
+          </span>
+
+          <button
+            type="button"
+            className={styles.buttonSecondary}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+            aria-label="Next page"
+            data-test-id="pagination-next"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
