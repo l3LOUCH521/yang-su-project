@@ -1,6 +1,7 @@
 import "@repo/ui/styles.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import "quill/dist/quill.snow.css";
 import "./globals.css";
 
 const geistSans = localFont({
