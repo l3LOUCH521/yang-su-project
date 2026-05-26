@@ -233,8 +233,12 @@ export default function PostList({ initialPosts }: PostListProps) {
               <div className={styles.postContent}>
                 <div>
                   <div className={styles.flexBetween}>
-                    <Link href={`/post/${post.urlId}`}>
-                      <h3 className={styles.postTitle} title="Modify Post">{post.title}</h3>
+                    <Link
+                      href={`/post/${post.urlId}`}
+                      className={styles.postTitle}
+                      title="Modify Post"
+                    >
+                      {post.title}
                     </Link>
                     <button
                       onClick={() => handleToggle(post.id, post.active)}
