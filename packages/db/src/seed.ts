@@ -3,8 +3,10 @@ import { posts } from "./data.js";
 
 export async function seed() {
   console.log("🌱 Seeding data");
+  await client.db.$executeRawUnsafe("PRAGMA foreign_keys = OFF;");
   await client.db.like.deleteMany();
   await client.db.post.deleteMany();
+  await client.db.$executeRawUnsafe("PRAGMA foreign_keys = ON;");
   for (const post of posts) {
     await client.db.post.create({
       data: {

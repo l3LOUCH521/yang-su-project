@@ -30,6 +30,7 @@ export default async function ModifyPostPage({
   async function handleUpdate(data: any) {
     "use server";
     await updatePost(post!.id, data);
+    redirect("/");
   }
 
   return (

@@ -148,6 +148,7 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
       await onSubmit(currentData);
           // Wait 3 seconds to show the success message, then navigate
           await new Promise(resolve => setTimeout(resolve, 3000));
+          setInternalSubmitting(false);
           router.push("/");
     } catch (error) {
       setSuccessMessage("");
@@ -155,6 +156,8 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
           throw error;
         }
       }
+    }else {
+      setInternalSubmitting(false);
     }
   };
 
