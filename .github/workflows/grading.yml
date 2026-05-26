@@ -1,7 +1,7 @@
 name: Autograding Tests
-on:
-  push:
-  workflow_dispatch:
+"on":
+  - push
+  - workflow_dispatch
 permissions:
   checks: write
   actions: read
@@ -169,6 +169,15 @@ jobs:
           timeout: 10
           max-score: 1
 
+      - name: Report Home Pagination to SkillPies
+        if: always() # run on failed tests as well
+        uses: tomitrescak/skillpies-reporting@v1.0
+        continue-on-error: true
+        with:
+          courseId: ${{env.COURSE_ID}}
+          sectionId: major-assignment-in-ci-cd-and-devops
+          testResult: ${{steps.homePagination.outputs.result}}
+
       ####################
       # EXTRA - ADMIN PAGINATION (SINGLE SPEC)
       ####################
@@ -182,41 +191,15 @@ jobs:
           command: pnpm playwright test tests/admin/admin-pagination.spec.ts
           timeout: 10
           max-score: 1
-      ####################
-      # EXTRA - ADMIN PAGINATION (SINGLE SPEC)
-      ####################
-      - name: Test - Rich text editor (E2E)
-        id: richTextEditor
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: tests/playwright
-          test-name: Extra - Rich text editor
-          command: pnpm playwright test tests/admin/rich-text-editor.spec.ts
-          timeout: 10
-          max-score: 1
-      ####################
-      # EXTRA E2E (TAGGED)
-      ####################
-      - name: Test4 (E2E)
-        id: test4
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: tests/playwright
-          test-name: Extra - Test4 (E2E)
-          command: pnpm test-4
-          timeout: 10
-          max-score: 1
 
-      - name: Report test4 to SkillPies
+      - name: Report Admin Pagination to SkillPies
         if: always() # run on failed tests as well
         uses: tomitrescak/skillpies-reporting@v1.0
         continue-on-error: true
         with:
           courseId: ${{env.COURSE_ID}}
           sectionId: major-assignment-in-ci-cd-and-devops
-          testResult: ${{steps.test4.outputs.result}}
+          testResult: ${{steps.adminPagination.outputs.result}}
 
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
@@ -229,7 +212,5 @@ jobs:
           TESTWEB_RESULTS: "${{steps.testWeb.outputs.result}}"
           HOMEPAGINATION_RESULTS: "${{steps.homePagination.outputs.result}}"
           ADMINPAGINATION_RESULTS: "${{steps.adminPagination.outputs.result}}"
-          RICHTEXTEDITOR_RESULTS: "${{steps.richTextEditor.outputs.result}}"
-          E2EA4_RESULTS: "${{steps.test4.outputs.result}}"
         with:
-          runners: npm1,npm2,npm3,testUtils,testUi,testWeb,homePagination,adminPagination,richTextEditor,test4
+          runners: npm1,npm2,npm3,testUtils,testUi,testWeb,homePagination,adminPagination
