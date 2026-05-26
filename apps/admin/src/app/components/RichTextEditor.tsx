@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Quill from "quill";
+import type Quill from "quill";
 
 type Props = {
   value: string;
@@ -19,6 +19,8 @@ export default function RichTextEditor({ value, onChange }: Props) {
     if (!containerEl) return;
     if (quillRef.current) return;
 
+    let cancelled = false;
+
     // Defensive cleanup: if React StrictMode mounted/unmounted this component
     // without fully removing DOM, Quill toolbars can be left behind.
     const parentEl = containerEl.parentElement;
@@ -26,41 +28,61 @@ export default function RichTextEditor({ value, onChange }: Props) {
     containerEl.innerHTML = "";
     containerEl.classList.remove("ql-container");
 
-    const quill = new Quill(containerEl, {
-      theme: "snow",
-    });
-    quillRef.current = quill;
+    let toolbarEl: HTMLElement | null = null;
+    let handleToolbarMouseDown: (() => void) | null = null;
+    let handleChange: (() => void) | null = null;
+    let quill: Quill | null = null;
 
-    if (value) {
-      quill.clipboard.dangerouslyPasteHTML(value);
-      lastValueRef.current = quill.root.innerHTML;
-    }
+    (async () => {
+      const { default: QuillCtor } = await import("quill");
+      if (cancelled) return;
 
-    const handleChange = () => {
-      const html = quill.root.innerHTML;
-      lastValueRef.current = html;
-      onChange(html);
-    };
+      quill = new QuillCtor(containerEl, {
+        theme: "snow",
+      });
+      quillRef.current = quill;
 
-    // Prevent toolbar actions from crashing when selection is null.
-    const toolbarEl = parentEl?.querySelector(".ql-toolbar") as
-      | HTMLElement
-      | null;
-    const handleToolbarMouseDown = () => {
-      if (!quillRef.current) return;
-      const range = quillRef.current.getSelection();
-      if (range) return;
-      quillRef.current.focus();
-      quillRef.current.setSelection(quillRef.current.getLength(), 0, "silent");
-    };
-    toolbarEl?.addEventListener("mousedown", handleToolbarMouseDown);
+      if (value) {
+        quill.clipboard.dangerouslyPasteHTML(value);
+        lastValueRef.current = quill.root.innerHTML;
+      }
 
-    quill.on("text-change", handleChange);
+      handleChange = () => {
+        if (!quill) return;
+        const html = quill.root.innerHTML;
+        lastValueRef.current = html;
+        onChange(html);
+      };
+
+      // Prevent toolbar actions from crashing when selection is null.
+      toolbarEl = parentEl?.querySelector(".ql-toolbar") as HTMLElement | null;
+      handleToolbarMouseDown = () => {
+        if (!quillRef.current) return;
+        const range = quillRef.current.getSelection();
+        if (range) return;
+        quillRef.current.focus();
+        quillRef.current.setSelection(
+          quillRef.current.getLength(),
+          0,
+          "silent",
+        );
+      };
+      toolbarEl?.addEventListener("mousedown", handleToolbarMouseDown);
+
+      quill.on("text-change", handleChange);
+    })();
 
     return () => {
-      quill.off("text-change", handleChange);
+      cancelled = true;
+
+      if (quill && handleChange) {
+        quill.off("text-change", handleChange);
+      }
       quillRef.current = null;
-      toolbarEl?.removeEventListener("mousedown", handleToolbarMouseDown);
+
+      if (toolbarEl && handleToolbarMouseDown) {
+        toolbarEl.removeEventListener("mousedown", handleToolbarMouseDown);
+      }
       toolbarEl?.remove();
 
       // Also remove any stray toolbars under this component.
