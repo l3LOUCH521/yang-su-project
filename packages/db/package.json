@@ -8,7 +8,6 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "node --input-type=module -e \"import { seed } from './dist/seed.js'; await seed();\"",
     "lint": "eslint . --max-warnings 0",
     "prebuild": "pnpm db:generate",
     "predev": "pnpm db:generate",
@@ -32,8 +31,7 @@
     }
   },
   "dependencies": {
-    "@repo/env": "workspace:*",
-    "dotenv": "^16.4.5"
+    "@repo/env": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
