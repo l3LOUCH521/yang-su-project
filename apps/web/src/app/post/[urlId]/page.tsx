@@ -1,6 +1,8 @@
 import { client } from "@repo/db/client";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { AppLayout } from "@/components/Layout/AppLayout";
@@ -120,7 +122,9 @@ export default async function Page({
           className="prose prose-lg dark:prose-invert max-w-none text-gray-900 dark:text-white"
           data-test-id="content-markdown"
         >
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+          <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]}>
+            {post.content}
+          </ReactMarkdown>
         </article>
       </div>
     </AppLayout>

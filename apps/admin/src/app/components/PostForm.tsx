@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { marked } from "marked";
 import styles from "./components.module.css";
+import RichTextEditor from "./RichTextEditor";
 
 type PostData = {
   title: string;
@@ -39,6 +40,7 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
   // States for errors, markdown preview, and cursor tracking.
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
+  const [useRichText, setUseRichText] = useState(false);
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [cursorPos, setCursorPos] = useState({ start: 0, end: 0 });
 
@@ -92,7 +94,13 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
     if (!data.title.trim()) newErrors.title = "Title is required";
     if (!data.description.trim()) newErrors.description = "Description is required";
     if (data.description.length > 200) newErrors.description = "Description is too long. Maximum is 200 characters";
-    if (!data.content.trim()) newErrors.content = "Content is required";
+    const contentIsEmpty = useRichText
+      ? data.content
+          .replace(/<[^>]*>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .trim().length === 0
+      : data.content.trim().length === 0;
+    if (contentIsEmpty) newErrors.content = "Content is required";
     if (!data.tags.trim()) newErrors.tags = "At least one tag is required";
     if (!data.category.trim()) newErrors.category = "Category is required";
     if (!data.imageUrl.trim()) {
@@ -160,6 +168,7 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
 
   // Switch between edit mode and markdown preview, saving cursor position.
   const togglePreview = () => {
+    if (useRichText) return;
     if (!showPreview && contentTextareaRef.current) {
       setCursorPos({
         start: contentTextareaRef.current.selectionStart,
@@ -176,6 +185,10 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
       contentTextareaRef.current.focus();
     }
   }, [showPreview, cursorPos]);
+
+  useEffect(() => {
+    if (useRichText) setShowPreview(false);
+  }, [useRichText]);
   
   // Convert markdown text to HTML securely. showPreview, cursorPos
   const getPreviewHtml = () => {
@@ -244,17 +257,35 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
       <div>
         <div className={styles.flexBetween} style={{ marginBottom: '0.25rem' }}>
           <label htmlFor="post-content" className={styles.label} style={{ marginBottom: 0 }}>Content</label>
-          <button
-            type="button"
-            onClick={togglePreview}
-            className={styles.buttonSecondary}
-          >
-            {showPreview ? "Close Preview" : "Preview"}
-          </button>
+          <div className={styles.flexGap4}>
+            <label className={styles.label} style={{ marginBottom: 0 }}>
+              <input
+                type="checkbox"
+                checked={useRichText}
+                onChange={(e) => setUseRichText(e.target.checked)}
+              />{" "}
+              Rich Text
+            </label>
+
+            {!useRichText && (
+              <button
+                type="button"
+                onClick={togglePreview}
+                className={styles.buttonSecondary}
+              >
+                {showPreview ? "Close Preview" : "Preview"}
+              </button>
+            )}
+          </div>
         </div>
-        
-        {showPreview ? (
-          <div 
+
+        {useRichText ? (
+          <RichTextEditor
+            value={formData.content}
+            onChange={(value) => updateField("content", value)}
+          />
+        ) : showPreview ? (
+          <div
             data-test-id="content-preview"
             className={styles.previewBox}
             dangerouslySetInnerHTML={{ __html: getPreviewHtml() }}
