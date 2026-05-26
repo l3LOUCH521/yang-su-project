@@ -41,6 +41,6 @@ export async function updatePost(id: number, data: any) {
       urlId
     }
   });
-  //revalidatePath("/");
+  revalidatePath("/");
   return { success: true };
 }
