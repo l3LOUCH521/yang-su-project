@@ -88,6 +88,34 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
     setFormData(newData);
   };
 
+  const updateDescription = (nextValue: string) => {
+    updateField("description", nextValue);
+    setErrors((prev) => {
+      const nextErrors = { ...prev };
+
+      if (!nextValue.trim()) {
+        // Don't eagerly set "required" here; only clear it if user starts typing.
+        if (nextErrors.description === "Description is required") {
+          delete nextErrors.description;
+        }
+      } else if (nextErrors.description === "Description is required") {
+        delete nextErrors.description;
+      }
+
+      if (nextValue.length > 200) {
+        nextErrors.description =
+          "Description is too long. Maximum is 200 characters";
+      } else if (
+        nextErrors.description ===
+        "Description is too long. Maximum is 200 characters"
+      ) {
+        delete nextErrors.description;
+      }
+
+      return nextErrors;
+    });
+  };
+
   // Validate input fields before submitting.
   const validate = (data: PostData = formDataRef.current) => {
     const newErrors: Record<string, string> = {};
@@ -244,7 +272,7 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
         <textarea
           id="post-desc"
           value={formData.description}
-          onChange={(e) => updateField("description", e.target.value)}
+          onChange={(e) => updateDescription(e.target.value)}
           rows={3}
           className={`${styles.input} ${errors.description ? styles.inputError : ""}`}
         />
