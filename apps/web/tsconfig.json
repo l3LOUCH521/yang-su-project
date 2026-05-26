@@ -6,7 +6,7 @@
         "name": "next"
       }
     ],
-    "types": ["@vitest/browser/providers/playwright"],
+    "types": ["@vitest/browser/providers/playwright", "react", "react-dom", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }
