@@ -8,6 +8,7 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
     "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
     "lint": "eslint . --max-warnings 0",
     "prebuild": "pnpm db:generate",
     "predev": "pnpm db:generate",
@@ -15,6 +16,9 @@
     "studio": "prisma studio",
     "dev": "tsc --watch",
     "build": "tsc"
+  },
+  "prisma": {
+    "seed": "tsx src/seed.ts"
   },
   "exports": {
     "./client": {
@@ -38,6 +42,7 @@
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
     "@types/node": "^22.13.1",
+    "tsx": "^4.22.3",
     "vitest": "^3.0.4"
   }
 }
