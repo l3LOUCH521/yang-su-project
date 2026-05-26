@@ -156,47 +156,6 @@ jobs:
           courseId: ${{env.COURSE_ID}}
           sectionId: assignment-2-3-blog-backend-in-authentication-and-authorisation
           testResult: ${{steps.npm3.outputs.result}}
-
-      ####################
-      # EXTRA - HOME PAGINATION (SINGLE SPEC)
-      ####################
-      - name: Test - Home Pagination (E2E)
-        id: homePagination
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: tests/playwright
-          test-name: Extra - Home Pagination
-          command: pnpm playwright test tests/web/home-pagination.spec.ts
-          timeout: 10
-          max-score: 1
-
-      ####################
-      # EXTRA - ADMIN PAGINATION (SINGLE SPEC)
-      ####################
-      - name: Test - Admin Pagination (E2E)
-        id: adminPagination
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: tests/playwright
-          test-name: Extra - Admin Pagination
-          command: pnpm playwright test tests/admin/admin-pagination.spec.ts
-          timeout: 10
-          max-score: 1
-      ####################
-      # EXTRA - ADMIN PAGINATION (SINGLE SPEC)
-      ####################
-      - name: Test - Rich text editor (E2E)
-        id: richTextEditor
-        uses: WesternSydneyUniversity/autograding-command-grader@v2
-        continue-on-error: true
-        with:
-          working-directory: tests/playwright
-          test-name: Extra - Rich text editor
-          command: pnpm playwright test tests/admin/rich-text-editor.spec.ts
-          timeout: 10
-          max-score: 1
       ####################
       # EXTRA E2E (TAGGED)
       ####################
@@ -229,9 +188,6 @@ jobs:
           TESTUTILS_RESULTS: "${{steps.testUtils.outputs.result}}"
           TESTUI_RESULTS: "${{steps.testUi.outputs.result}}"
           TESTWEB_RESULTS: "${{steps.testWeb.outputs.result}}"
-          HOMEPAGINATION_RESULTS: "${{steps.homePagination.outputs.result}}"
-          ADMINPAGINATION_RESULTS: "${{steps.adminPagination.outputs.result}}"
-          RICHTEXTEDITOR_RESULTS: "${{steps.richTextEditor.outputs.result}}"
           E2EA4_RESULTS: "${{steps.test4.outputs.result}}"
         with:
-          runners: npm1,npm2,npm3,testUtils,testUi,testWeb,homePagination,adminPagination,richTextEditor,test4
+          runners: npm1,npm2,npm3,testUtils,testUi,testWeb,test4
