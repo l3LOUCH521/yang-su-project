@@ -188,6 +188,6 @@ jobs:
           TESTUTILS_RESULTS: "${{steps.testUtils.outputs.result}}"
           TESTUI_RESULTS: "${{steps.testUi.outputs.result}}"
           TESTWEB_RESULTS: "${{steps.testWeb.outputs.result}}"
-          E2EA4_RESULTS: "${{steps.test4.outputs.result}}"
+          TEST4_RESULTS: "${{steps.test4.outputs.result}}"
         with:
           runners: npm1,npm2,npm3,testUtils,testUi,testWeb,test4
