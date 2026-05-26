@@ -7,6 +7,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import LikeButton from "@/components/LikeButton";
+import { CommentsSection } from "./CommentsSection";
 
 function formatDate(date: Date) {
   // Convert the raw date string into date object
@@ -32,10 +33,13 @@ function getClientIp(requestHeaders: Headers): string {
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ urlId: string }>;
+  searchParams?: Promise<{ replyTo?: string }>;
 }) {
   const { urlId } = await params;
+  const { replyTo } = (await searchParams) ?? {};
   
   let post = await client.db.post.findUnique({
     where: { urlId },
@@ -126,6 +130,8 @@ export default async function Page({
             {post.content}
           </ReactMarkdown>
         </article>
+
+        <CommentsSection postId={post.id} urlId={urlId} replyTo={replyTo} />
       </div>
     </AppLayout>
   );
