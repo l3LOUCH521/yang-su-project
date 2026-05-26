@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition , useEffect} from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Post } from "@repo/db/data";
@@ -22,13 +22,13 @@ export default function PostList({ initialPosts }: PostListProps) {
     setOptimisticPosts(initialPosts);
   }, [initialPosts]);
 
-const handleToggle = async (id: number, currentActive: boolean) => {
-  setOptimisticPosts(posts => 
-    posts.map(p => p.id === id ? { ...p, active: !currentActive } : p)
-  );
-  await togglePostStatus(id, currentActive);
-  router.refresh();
-};
+  const handleToggle = async (id: number, currentActive: boolean) => {
+    setOptimisticPosts(posts =>
+      posts.map(p => p.id === id ? { ...p, active: !currentActive } : p)
+    );
+    await togglePostStatus(id, currentActive);
+    router.refresh();
+  };
 
   const formatDate = (date: Date | string) => {
     return `Posted on ${new Date(date).toLocaleDateString("en-US", {
@@ -47,8 +47,8 @@ const handleToggle = async (id: number, currentActive: boolean) => {
   const [visibility, setVisibility] = useState("all");
 
   // Filter by Date Created (on or after)
-  const [dateFilter, setDateFilter] = useState("");  
-  
+  const [dateFilter, setDateFilter] = useState("");
+
   // State to manage sorting title or date and default is date
   const [sortBy, setSortBy] = useState<"title" | "date">("date");
 
@@ -64,7 +64,7 @@ const handleToggle = async (id: number, currentActive: boolean) => {
     const matchSearch =
       post.title.toLowerCase().includes(search.toLowerCase()) ||
       post.content.toLowerCase().includes(search.toLowerCase());
-    
+
     // filter by tag
     const cleanSearchTag = tag.toLowerCase().replace(/[#\s-]/g, "");
     const cleanPostTags = post.tags.toLowerCase().replace(/[\s-]/g, "");
@@ -80,8 +80,8 @@ const handleToggle = async (id: number, currentActive: boolean) => {
     if (dateFilter) {
       const postDateObj = new Date(post.date);
       const postYear = postDateObj.getFullYear();
-      const postMonth = String(postDateObj.getMonth() + 1);
-      const postDay = String(postDateObj.getDate());
+      const postMonth = String(postDateObj.getMonth() + 1).padStart(2, "0");
+      const postDay = String(postDateObj.getDate()).padStart(2, "0");
       const formattedPostDate = `${postYear}-${postMonth}-${postDay}`;
 
       // 
@@ -122,84 +122,95 @@ const handleToggle = async (id: number, currentActive: boolean) => {
   return (
     <div className={styles.flexColGap6}>
       {/* Filters Section */}
-          <div className={styles.card}>
-            <h2 className={styles.title}>Filter Posts</h2>
-            <div className={styles.gridCols4}>
-              <div>
-                <label htmlFor="filter-content" className={styles.label}>Filter by Content:</label>
-                <input
-                  id="filter-content"
-                  type="text"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div>
-                <label htmlFor="filter-tag" className={styles.label}>Filter by Tag:</label>
-                <input
-                  id="filter-tag"
-                  type="text"
-                  placeholder="E.g., React"
-                  value={tag}
-                  onChange={(e) => setTag(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div>
-                <label htmlFor="filter-date" className={styles.label}>Filter by Date Created:</label>
-                <input
-                  id="filter-date"
-                  type="date"
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                  className={styles.input}
-                />
-              </div>
-              <div>
-                <label className={styles.label}>Visibility</label>
-                <select
-                  value={visibility}
-                  onChange={(e) => setVisibility(e.target.value)}
-                  className={styles.input}
-                >
-                  <option value="all">All</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
+      <div className={styles.card}>
+        <h2 className={styles.title}>Filter Posts</h2>
+        <div className={styles.gridCols4}>
+          <div>
+            <label htmlFor="filter-content" className={styles.label}>Filter by Content:</label>
+            <input
+              id="filter-content"
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={styles.input}
+            />
           </div>
-
-          {/* Sorter & Actions Section */}
-          <div className={styles.flexBetween}>
-            <div className={styles.flexGap4}>
-              <label htmlFor="sort-items" className={styles.label}>Sort By:</label>
-              <select
-                id="sort-items"
-                value={`${sortBy}-${sortOrder}`}
-                onChange={(e) => {
-                  const [newSortBy, newSortOrder] = e.target.value.split("-");
-                  setSortBy(newSortBy as "title" | "date");
-                  setSortOrder(newSortOrder as "asc" | "desc");
-                }}
-                className={styles.input}
-              >
-                <option value="date-desc">Descending</option>
-                <option value="date-asc">Ascending</option>
-                <option value="title-asc">Name (A-Z)</option>
-                <option value="title-desc">Name (Z-A)</option>
-              </select>
-            </div>
-
-            <Link
-              href="/posts/create"
-              className={styles.buttonSuccess}
+          <div>
+            <label htmlFor="filter-tag" className={styles.label}>Filter by Tag:</label>
+            <input
+              id="filter-tag"
+              type="text"
+              placeholder="E.g., React"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              className={styles.input}
+            />
+          </div>
+          <div>
+            <label htmlFor="filter-date" className={styles.label}>Filter by Date Created:</label>
+            <input
+              id="filter-date"
+              type="text"
+              placeholder="MMDDYYYY"
+              defaultValue=""
+              onChange={(e) => {
+                const raw = e.target.value;
+                if (raw.length === 8) {
+                  const mm = raw.slice(0, 2);
+                  const dd = raw.slice(2, 4);
+                  const yyyy = raw.slice(4, 8);
+                  setDateFilter(`${yyyy}-${mm}-${dd}`);
+                } else {
+                  setDateFilter("");
+                }
+              }}
+              className={styles.input}
+            />
+          </div>
+          <div>
+            <label className={styles.label}>Visibility</label>
+            <select
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value)}
+              className={styles.input}
             >
-              Create Post
-            </Link>
+              <option value="all">All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
           </div>
+        </div>
+      </div>
+
+      {/* Sorter & Actions Section */}
+      <div className={styles.flexBetween}>
+        <div className={styles.flexGap4}>
+          <label htmlFor="sort-items" className={styles.label}>Sort By:</label>
+          <select
+            id="sort-items"
+            value={`${sortBy}-${sortOrder}`}
+            onChange={(e) => {
+              const [newSortBy, newSortOrder] = e.target.value.split("-");
+              setSortBy(newSortBy as "title" | "date");
+              setSortOrder(newSortOrder as "asc" | "desc");
+            }}
+            className={styles.input}
+          >
+            <option value="date-desc">Descending</option>
+            <option value="date-asc">Ascending</option>
+            <option value="title-asc">Name (A-Z)</option>
+            <option value="title-desc">Name (Z-A)</option>
+          </select>
+        </div>
+
+        <Link
+          href="/posts/create"
+          className={styles.buttonSuccess}
+        >
+          Create Post
+        </Link>
+      </div>
 
       {/* Post List */}
       <div className={styles.flexColGap6}>
@@ -227,16 +238,15 @@ const handleToggle = async (id: number, currentActive: boolean) => {
                     </Link>
                     <button
                       onClick={() => handleToggle(post.id, post.active)}
-                      className={`${styles.statusBadge} ${
-                        post.active ? styles.statusActive : styles.statusInactive
-                      }`}
+                      className={`${styles.statusBadge} ${post.active ? styles.statusActive : styles.statusInactive
+                        }`}
                       title="Click to toggle active status"
                       disabled={isPending}
                     >
                       {post.active ? "Active" : "Inactive"}
                     </button>
                   </div>
-                  
+
                   <p className={styles.postDate}>
                     {formatDate(post.date)}
                   </p>
