@@ -43,8 +43,12 @@
     "dev:test-3": {
       "dependsOn": ["dev:test"]
     },
+    "test-4": {},
+    "dev:test-4": {
+      "dependsOn": ["dev:test"]
+    },
     "all:test": {
-      "dependsOn": ["test", "test-1", "test-2", "test-3"]
+      "dependsOn": ["test", "test-1", "test-2", "test-3","test-4"]
     },
     "db:generate": {
       "dependsOn": ["^db:generate"]

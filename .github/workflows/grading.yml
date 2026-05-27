@@ -166,7 +166,7 @@ jobs:
         with:
           working-directory: tests/playwright
           test-name: Extra - Test4 (E2E)
-          command: pnpm test-4
+          command: pnpm turbo test-4
           timeout: 10
           max-score: 1
 
