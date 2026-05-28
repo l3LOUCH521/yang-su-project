@@ -77,15 +77,13 @@ const handleToggle = async (id: number, currentActive: boolean) => {
 
     // filter by date created on or after
     let matchDate = true;
-    if (dateFilter) {
-      const postDateObj = new Date(post.date);
-      const postYear = postDateObj.getFullYear();
-      const postMonth = String(postDateObj.getMonth() + 1);
-      const postDay = String(postDateObj.getDate());
-      const formattedPostDate = `${postYear}-${postMonth}-${postDay}`;
-
-      // 
-      matchDate = formattedPostDate >= dateFilter;
+    if (dateFilter && dateFilter.length === 8) {
+      const day = parseInt(dateFilter.slice(0, 2), 10);
+      const month = parseInt(dateFilter.slice(2, 4), 10) - 1;
+      const year = parseInt(dateFilter.slice(4, 8), 10);
+      const filterDate = new Date(year, month, day);
+      const postDate = new Date(post.date);
+      matchDate = postDate >= filterDate;
     }
 
     // Returns true only if ALL applied filters are met (combining filters requirement)
@@ -151,7 +149,8 @@ const handleToggle = async (id: number, currentActive: boolean) => {
                 <label htmlFor="filter-date" className={styles.label}>Filter by Date Created:</label>
                 <input
                   id="filter-date"
-                  type="date"
+                  type="text"
+                  placeholder="DDMMYYYY"
                   value={dateFilter}
                   onChange={(e) => setDateFilter(e.target.value)}
                   className={styles.input}
