@@ -25,8 +25,11 @@ export function SummaryItem({
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
         }`}
       >
-        <span>{name}</span>
-        <span data-test-id="post-count" className="px-2 py-1 text-xs bg-gray-300 dark:bg-gray-600 rounded-full">
+        <span className="min-w-0 flex-1 truncate pr-2">{name}</span>
+        <span
+          data-test-id="post-count"
+          className="shrink-0 rounded-full bg-gray-300 px-2 py-1 text-xs dark:bg-gray-600"
+        >
           {count}
         </span>
       </a>
