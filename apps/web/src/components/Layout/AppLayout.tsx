@@ -19,7 +19,7 @@ export function AppLayout({
 }>) {
   return (
     //add background color and min height to ensure the layout covers the whole screen
-    <div className="flex min-h-screen bg-white dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-900 md:flex-row">
       <LeftMenu
       //pass selected filters as props to LeftMenu, so it can highlight the active filter
         selectedCategory={selectedCategory}
@@ -27,7 +27,7 @@ export function AppLayout({
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}
       />
-      <div className="flex-1 flex flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <TopMenu query={query} />
         <Content>{children}</Content>
       </div>

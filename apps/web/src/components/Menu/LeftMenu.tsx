@@ -31,7 +31,7 @@ export async function LeftMenu({
   const activePosts = posts.filter((post) => post.active);
 
   return (
-    <div className="w-70 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-800 p-4">
+    <div className="w-full border-b border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-800 md:h-screen md:w-72 md:overflow-y-auto md:border-b-0 md:border-r">
       <div className="mb-4 flex items-center gap-3">
         <img src="/wsulogo.png" alt="WSU Logo" className="w-10 h-auto" />
         <a href="/" className="text-xl font-bold dark:text-white">
