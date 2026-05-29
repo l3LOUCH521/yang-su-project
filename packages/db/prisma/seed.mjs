@@ -1,4 +1,4 @@
-import { seed } from "..dist/seed.js";
+import { seed } from "../dist/seed.js";
 
 try {
     await seed();
