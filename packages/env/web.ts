@@ -1,7 +1,12 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-export const env = createEnv({
+let cachedEnv: ReturnType<typeof createEnv> | null = null;
+
+function initEnv() {
+  if (cachedEnv) return cachedEnv;
+
+  cachedEnv = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
    * isn't built with invalid env vars.
@@ -37,4 +42,18 @@ export const env = createEnv({
    * `SOME_VAR=''` will throw an error.
    */
   emptyStringAsUndefined: true,
-});
+  });
+
+  return cachedEnv;
+}
+
+// Lazily validate env vars the first time they are accessed.
+export const env = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      if (typeof prop !== "string") return undefined;
+      return (initEnv() as any)[prop];
+    },
+  },
+) as ReturnType<typeof createEnv>;
