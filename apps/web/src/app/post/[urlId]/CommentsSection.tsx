@@ -134,14 +134,14 @@ export async function CommentsSection({
                   <input
                     name="authorName"
                     placeholder="Your name (optional)"
-                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900"
+                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/60"
                   />
                   <textarea
                     name="content"
                     placeholder="Write a reply..."
                     required
                     rows={3}
-                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900"
+                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/60"
                   />
                 </div>
                 <div className="flex items-center gap-3">
@@ -180,14 +180,14 @@ export async function CommentsSection({
           <input
             name="authorName"
             placeholder="Your name (optional)"
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900"
+            className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/60"
           />
           <textarea
             name="content"
             placeholder="Write a comment..."
             required
             rows={4}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900"
+            className="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/60"
           />
         </div>
         <button
