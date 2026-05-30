@@ -33,4 +33,5 @@ export async function seed() {
       });
     }
   }
+  await client.db.$executeRaw`SELECT setval(pg_get_serial_sequence('"Post"', 'id'), (SELECT MAX(id) FROM "Post"))`;
 }
