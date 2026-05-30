@@ -19,10 +19,11 @@ export async function togglePostStatus(id: number, currentStatus: boolean) {
 }
 
 export async function createPost(data: any) {
+  const {id, ...rest} = data;
   const urlId = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
   await client.db.post.create({
     data: {
-      ...data,
+      ...rest,
       urlId,
       active: true,
       views: 0
