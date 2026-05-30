@@ -1,6 +1,10 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+const nodeEnv = (globalThis as unknown as {
+  process?: { env?: Record<string, string | undefined> };
+}).process?.env ?? {};
+
 let cachedEnv: ReturnType<typeof createEnv> | null = null;
 
 function initEnv() {
@@ -24,19 +28,10 @@ function initEnv() {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
 
-  /**
-   * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
-   * middlewares) or client-side so we need to destruct manually.
-   */
   runtimeEnv: {
-    // E2E: process.env.E2E,
-    JWT_SECRET: process.env.JWT_SECRET,
+    JWT_SECRET: nodeEnv.JWT_SECRET ?? "secret",
   },
-  /**
-   * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
-   * useful for Docker builds.
-   */
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation: !!nodeEnv.SKIP_ENV_VALIDATION,
   /**
    * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
    * `SOME_VAR=''` will throw an error.

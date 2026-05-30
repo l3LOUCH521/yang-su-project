@@ -51,7 +51,8 @@ export async function POST(req: NextRequest) {
     return contentType.includes("application/json")
       ? NextResponse.json({ success: false }, { status: 401 })
       : NextResponse.redirect(new URL("/?error=1", req.url));
-  } catch (err) {
+  } catch (error) {
+    console.error("Auth error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
