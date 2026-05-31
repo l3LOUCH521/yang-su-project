@@ -55,7 +55,7 @@ export async function LeftMenu({
           </li>
           <li className="pt-4">
             <a
-              href="/admin"
+              href="https://yang-su-project-admin.vercel.app/"
               className="block px-3 py-2 text-sm dark:text-gray-300 dark:hover:bg-gray-700"
             >
               Admin
