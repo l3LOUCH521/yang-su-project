@@ -151,12 +151,13 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
     if (validate(currentData)) {
       if (onSubmit) {
     setInternalSubmitting(true);
-        setSuccessMessage("Post updated successfully");
     try {
       await onSubmit(currentData);
+          setSuccessMessage("Post updated successfully");
           // Wait 3 seconds to show the success message, then navigate
           await new Promise(resolve => setTimeout(resolve, 3000));
-          router.push("/");
+          router.refresh(); // Refresh the current page to show the updated post
+         //router.push("/");
     } catch (error) {
       setSuccessMessage("");
       setInternalSubmitting(false);
