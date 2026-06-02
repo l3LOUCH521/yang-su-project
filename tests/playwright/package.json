@@ -10,6 +10,7 @@
     "test-3": "pnpm playwright test --grep \"@a3\"",
     "test-4": "pnpm playwright test --grep \"@a4\"",
     "ui": "pnpm playwright test --ui",
+    "test:all": "playwright test",
     "dev:test-1": "pnpm playwright test --ui --grep \"@a1\"",
     "dev:test-2": "pnpm playwright test --ui --grep \"@a1|@a2\"",
     "dev:test-3": "pnpm playwright test --ui --grep \"@a1|@a2|@a3\"",
