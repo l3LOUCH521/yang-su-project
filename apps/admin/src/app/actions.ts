@@ -51,9 +51,9 @@ export async function updatePost(data: any) {
     });
     
     revalidatePath("/");
-    return { success: true };  // ← 加回返回值
+    return { success: true };
   } catch (error) {
     console.error("Update error:", error);
-    throw error;  // ← 抛出错误，让前端知道失败
+    throw error;
   }
 }
