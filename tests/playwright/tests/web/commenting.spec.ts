@@ -65,7 +65,7 @@ test.describe("COMMENTS SYSTEM", () => {
 
     const parentDiv = page.locator(`div[data-test-id^="comment-"]:has-text("${parentComment}")`).first();
     await parentDiv.getByRole("link", { name: "Reply" }).click();
-    await expect(page).toHaveURL(/replyTo=\d+/);
+    await page.waitForURL(/replyTo=\d+/);
 
     const replyText = `Reply content ${Date.now()}`;
     await page.getByPlaceholder("Write a reply...").fill(replyText);
@@ -86,7 +86,7 @@ test.describe("COMMENTS SYSTEM", () => {
 
     const parentDiv = page.locator(`div[data-test-id^="comment-"]:has-text("${parentComment}")`).first();
     await parentDiv.getByRole("link", { name: "Reply" }).click();
-    await expect(page).toHaveURL(/replyTo=\d+/);
+    await page.waitForURL(/replyTo=\d+/);
     await page.getByRole("link", { name: "Cancel" }).click();
     await expect(page).not.toHaveURL(/replyTo=\d+/);
     await expect(page.getByPlaceholder("Write a reply...")).not.toBeVisible();
