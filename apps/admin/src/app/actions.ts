@@ -34,7 +34,7 @@ export async function createPost(data: any) {
 }
 
 export async function updatePost(data: any) {
-  const { id, ...rest } = data;
+  const { id, urlId, ...rest } = data;
   
   try {
     const existing = await client.db.post.findUnique({
