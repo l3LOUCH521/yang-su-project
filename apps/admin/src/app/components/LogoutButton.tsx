@@ -11,9 +11,8 @@ export function LogoutButton({ className }: { className?: string }) {
       className={className}
       onClick={async () => {
         await fetch("/api/auth", { method: "DELETE" });
-        setTimeout(() => {
-          window.location.replace("/");
-        }, 50);
+        router.refresh();
+        router.push("/login");
       }}
     >
       Logout
