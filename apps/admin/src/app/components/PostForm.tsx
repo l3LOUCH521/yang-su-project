@@ -65,8 +65,12 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
   };
 
   // Sync form state if the parent component updates initialData.
-  useEffect(() => {
-    if (initialData) {
+  const isInitialMount = useRef(true);
+
+useEffect(() => {
+  if (initialData) {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
       const newData: PostData = {
         title: initialData.title || "",
         description: initialData.description || "",
@@ -75,12 +79,12 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
         imageUrl: initialData.imageUrl || "",
         category: initialData.category || "",
       };
-      if (isSamePostData(formDataRef.current, newData)) return;
       formDataRef.current = newData;
       setFormData(newData);
       setErrors({});
     }
-  }, [initialData]);
+  }
+}, [initialData]);
   // Update a specific field in the form state.
   const updateField = (field: keyof PostData, value: string) => {
     const newData = { ...formDataRef.current, [field]: value };
@@ -154,9 +158,6 @@ export default function PostForm({ initialData, onSubmit, isSubmitting = false }
     try {
       await onSubmit(currentData);
           setSuccessMessage("Post updated successfully");
-          // Wait 3 seconds to show the success message, then navigate
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          router.refresh(); // Refresh the current page to show the updated post
          //router.push("/");
     } catch (error) {
       setSuccessMessage("");
