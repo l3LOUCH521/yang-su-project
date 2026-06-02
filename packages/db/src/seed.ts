@@ -3,6 +3,7 @@ import { posts } from "./data.js";
 
 export async function seed() {
   console.log("🌱 Seeding data");
+  await client.db.comment.deleteMany();
   await client.db.like.deleteMany();
   await client.db.post.deleteMany();
   for (const post of posts) {

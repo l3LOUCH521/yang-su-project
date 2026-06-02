@@ -6,7 +6,7 @@ test.beforeAll(async () => {
   await seed();
 });
 
-test.describe("HOME PAGINATION", () => {
+test.describe("WEB PAGINATION", () => {
   test(
     "Disables next/prev when there is only one page",
     {
