@@ -60,15 +60,13 @@ To run the tests please run
 
 ```
 turbo test-1
-```
-```
 turbo test-2
-```
-```
 turbo test-3
-```
-```
 turbo test-4
+```
+to run all test in one command
+```
+pnpm --filter @repo/playwright run test:all
 ```
 ## Default credentials
 admin password: 123
