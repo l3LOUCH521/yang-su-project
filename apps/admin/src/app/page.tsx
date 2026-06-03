@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { client } from "@repo/db/client";
 import { isLoggedIn } from "../utils/auth";
 import styles from "./page.module.css";

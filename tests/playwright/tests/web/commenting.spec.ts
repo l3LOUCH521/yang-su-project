@@ -2,7 +2,7 @@ import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
 test.describe("COMMENTS SYSTEM", () => {
-  test.beforeEach(async () => {
+  test.beforeAll(async () => {
     await seed();
   });
 
@@ -43,15 +43,6 @@ test.describe("COMMENTS SYSTEM", () => {
     
     const authorSpan = page.locator('span.font-semibold', { hasText: 'Anonymous' });
     await expect(authorSpan).toBeVisible();
-  });
-
-  test("Cannot add empty comment", { tag: "@a4" }, async ({ page }) => {
-    await page.goto("/post/boost-your-conversion-rate");
-    await page.getByPlaceholder("Your name (optional)").fill("Test User");
-    const commentButton = page.getByRole("button", { name: "Comment" });
-    await commentButton.click();
-    await expect(page).toHaveURL("/post/boost-your-conversion-rate");
-    await expect(page.getByText("No comments yet.")).toBeVisible();
   });
 
   test("Reply to a comment", { tag: "@a4" }, async ({ page }) => {

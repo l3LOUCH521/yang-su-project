@@ -64,7 +64,8 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3002",
       },
-      dependencies: process.env.CI ? ["setup"] : [],
+      //dependencies: process.env.CI ? ["setup"] : [],
+        dependencies: ["setup"],
     },
     {
       name: "chromium",
