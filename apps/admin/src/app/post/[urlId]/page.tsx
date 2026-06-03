@@ -29,7 +29,8 @@ export default async function ModifyPostPage({
 
   async function handleUpdate(data: any) {
     "use server";
-    await updatePost(post!.id, data);
+    const { urlId, ...cleanData } = data;
+    await updatePost({ ...cleanData, id: post!.id });
   }
 
   return (

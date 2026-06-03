@@ -53,14 +53,6 @@ export async function LeftMenu({
           <li>
             <TagList selectedTag={selectedTag} posts={activePosts} />
           </li>
-          <li className="pt-4">
-            <a
-              href="https://yang-su-project-admin.vercel.app/"
-              className="block px-3 py-2 text-sm dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              Admin
-            </a>
-          </li>
         </ul>
       </nav>
     </div>

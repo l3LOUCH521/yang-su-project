@@ -28,7 +28,7 @@ export async function CommentsSection({
 
     const content = typeof contentRaw === "string" ? contentRaw.trim() : "";
     if (!content) {
-      redirect(`/post/${urlId}`);
+      throw new Error("Content is required");
     }
 
     let parentId: number | null = null;

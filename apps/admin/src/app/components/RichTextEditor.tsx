@@ -41,6 +41,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
         theme: "snow",
       });
       quillRef.current = quill;
+      (containerEl as any).__quill = quill;
 
       if (value) {
         quill.clipboard.dangerouslyPasteHTML(value);

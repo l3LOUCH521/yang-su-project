@@ -33,15 +33,27 @@ export async function createPost(data: any) {
   return { success: true };
 }
 
-export async function updatePost(id: number, data: any) {
-  const urlId = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-  await client.db.post.update({
-    where: { id },
-    data: {
-      ...data,
-      urlId
+export async function updatePost(data: any) {
+  const { id, urlId, ...rest } = data;
+  
+  try {
+    const existing = await client.db.post.findUnique({
+      where: { id }
+    });
+    
+    if (!existing) {
+      throw new Error("Post not found");
     }
-  });
-  //revalidatePath("/");
-  return { success: true };
+    
+    await client.db.post.update({
+      where: { id },
+      data: rest
+    });
+    
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.error("Update error:", error);
+    throw error;
+  }
 }
