@@ -21,16 +21,22 @@ To run end to end tests you need to install headless browsers. Please run the fo
 ```
 pnpx playwright install
 ```
-
+if the playwright was just installed or updated, please run the following command under playwright/test/web
+```
+pnpm exec playwright install
+```
 ## Environment
 
-In all packages `apps/admin` and `packages/db` find `.env.example` files and copy them to `.env`. Set your environment variables accordingly!
+In all packages `apps/admin` and `packages/db` find `.env.example` files and copy them to `.env`.
+for the .env file under the packages/db, please replace the "password" and "db_name"
 
 ## Database
+to create a local postgres database please run the following command in terminal
+```
+psql -U postgres
+create db db_name
+```
 under the packages/db folder please run the following code to set up the database
-```
-npx prisma generate
-```
 ```
 npx prisma db push
 ```
