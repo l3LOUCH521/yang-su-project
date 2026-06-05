@@ -1,3 +1,133 @@
+# Assignment 2 - Blog - Client App
+
+The goal of this assignment is to implement all the client side functionality.
+Example implementation is in the image below.
+
+## 👾 Requirements - Assignment 2.1 - Client
+
+### HOME SCREEN
+
+- [ ] User must see only the "active" posts
+- [ ] User must see the list of blog post categories, where each category points to UI showing only posts of that category
+- [ ] User must see the list of blog post tags, where each tag points to UI showing only posts of that category
+- [ ] User must see the history of blog posts, showing month and year, where each moth, year tuple points to UI showing only posts of that category
+- [ ] Tags and history items shown are only considered from active posts
+- [ ] The list shows the following items:
+  - blog title, pointing to detail page
+  - short description
+  - date
+  - image
+  - tags
+  - likes
+  - views
+- [ ] User must be able to switch between dark and light theme with a button
+      The dark theme setting is stored in the "data-theme" attribute on html element
+- [ ] There is a search functionality that filters blogs based on string found in title or description, redirecting to search page
+
+### DETAIL SCREEN
+
+- [ ] Detail page shows the same items as list item, but the short description is replaced by formatted long description
+- [ ] Detail text is stored as Markdown, which needs to be converted to HTML
+
+### CATEGORY SCREEN
+
+- [ ] Displays posts from the category from url (e.g. /category/react)
+- [ ] Displays "0 Posts" when search does no posts have that category
+
+### HISTORY SCREEN
+
+- [ ] Displays posts from year and month specified in the url (e.g. /history/2024/12)
+- [ ] Displays "0 Posts" when no posts are from that given month and year
+
+### TAG SCREEN
+
+- [ ] Displays posts with the tag url (e.g. /tags/dev-tools)
+- [ ] Displays "0 Posts" when search does no posts have that tag
+
+### SEARCH SCREEN
+
+- [ ] Displays results based on search string stored in the query string (e.g. /search?q=Fat)
+- [ ] Displays "0 Posts" when search does not find anything
+
+## 👾 Requirements - Assignment 2.2 - Admin
+
+### ADMIN HOME SCREEN
+
+- [ ] Shows Login screen if not logged
+- [ ] Shows List screen if logged
+- [ ] There must be a logout button
+- [ ] Clicking the logout button logs the user out
+- [ ] Authenticate the current client using a hard-coded password
+- [ ] Use a httpOnly cookie and name it "auth_token" to remember the signed-in state.
+
+### ADMIN LIST SCREEN
+
+- [ ] Shows both active and inactive posts
+- [ ] Article list is only accessible to logged-in users.
+- [ ] There is a filter screen that allows filtering posts by:
+  - [ ] Title or content
+  - [ ] Tags
+  - [ ] Date
+  - [ ] Visibility
+- [ ] You can combine multiple filters
+- [ ] Users can sort posts by name or creation date, both ascending and descending
+- [ ] The post list displays a list of filtered items with the following information:
+  - [ ] The list post item displays the image, title of the post
+  - [ ] The list post items display metadata such as category, tags, and "active" status.
+  - [ ] The active status is a button that, on click, just displays a message
+- [ ] Clicking on the title takes the user to the MODIFY SCREEN, allowing the user to modify the current post
+- [ ] There is a button to create new posts
+- [ ] Clicking on the "Create Post" button takes the user to the CREATE SCREEN
+
+### ADMIN CREATE and UPDATE screen
+
+Both create and update screens display the same UI, but the update screen preloads the data into fields.
+
+- [ ] Page is only accessible to logged in user
+- [ ] There must be the following fields which must be validated for errors:
+  - [ ] Title (`input, string`)
+  - [ ] Description (textarea, string, max 200 characters)
+  - [ ] Content (`textarea, markdown string`)
+  - [ ] Tag List (`input, string`) shows a comma-separated list of tags.
+  - [ ] Image URL (`input, URL`)
+- [ ] Under the Description is a "Preview" button that replaces the text area with a rendered markdown string and changes the title to "Close Preview".
+- [ ] When the preview is closed, the cursor must be in the same position as before opening the preview.
+- [ ] Under the image input is an image preview.
+- [ ] User can click on the "Save" button that displays an error ui if one of the fields is not specified or valid.
+
+## 👾 Requirements: Assignment 2.3
+
+### BACKEND / CLIENT
+
+- [ ] Data is loaded from the database backend
+- [ ] Data filtering is done server side and only filtered data is sent to client
+- [ ] Each visit of the page increases the post "views" count by one
+- [ ] User can "like" the post on the detail screen, NOT on the list screen (hint, create the `/api/likes/route.ts` route and implement the needed handlers)
+- [ ] Liking the post increases the like count by one
+- [ ] User can like the post only once (use IP)
+- [ ] User can unlike the post, decreasing the like post by one
+
+### BACKEND / ADMIN / AUTHORISATION
+
+> For these two requirements we do not have End 2 End tests and will be checked manually.
+
+- [ ] The password is checked on server in the `/api/auth` route
+- [ ] The POST method is used for login
+- [ ] The DELETE method is used for logout
+- [ ] The admin home page checks for the presence of JWT token and verifies it, if the token does not exist or is invalid, displays the login control.
+
+### BACKEND / ADMIN / LIST SCREEN
+
+- [ ] Logged in user can activate / deactivate a post clicking on the activate button, automatically saving changes
+
+### BACKEND / ADMIN / UPDATE SCREEN
+
+- [ ] Logged in user can save changes to database, if the form is validated
+
+### BACKEND / ADMIN / CREATE SCREEN
+
+- [ ] Logged in user can create a new post to the database, if the form is validated
+
 ## Prerequisites
 
 First, make sure that "pnpm" and "turbo" is installed in your computer. If not, please follow installation instructions for pnpm. If turbo is not installed, please install it using pnpm with the following command:
@@ -76,3 +206,36 @@ pnpm --filter @repo/playwright run test:all
 ```
 ## Default credentials
 admin password: 123
+
+## Project structure
+
+The project is monorepo with the following packages split into three categories:
+
+**Applications**
+
+Contains the following web applications:
+
+- **apps/admin** - [Admin Website](https://yang-su-project-admin.vercel.app/)
+- **apps/web** - [Client website](https://yang-su-project-web.vercel.app/)
+
+**Packages**
+
+Contains the following packages with shared code and configurations:
+
+- **packages/ui** - Library of UI elements shared between admin and client
+- **packages/utils** - Library of utility functions shared between other projects
+- **packages/db** - Library handling the database connection
+- **packages/eslint-config**, **packages/tailwind-config** and **packages/typescript-config** contain configuration files for build pipelines for this project
+
+**Tests**
+
+Contains the following test applications:
+
+- **tests/playwright-admin** - End to End tests for the admin application
+- **tests/playwright-web** - End to End tests for the client application
+- **tests/storybook** - Configured storybook instance for development and testing of React components in isolation
+
+## Application Structure
+
+The client application comes with pre-defined router
+Tha admin application is much more bare with most functionality AND structure needed to be completed by you.
